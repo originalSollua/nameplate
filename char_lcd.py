@@ -4,6 +4,9 @@
 import time
 import random
 import Adafruit_CharLCD as LCD
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
 
 # Raspberry Pi pin configuration:
@@ -13,6 +16,9 @@ lcd_d4        = 23
 lcd_d5        = 17
 lcd_d6        = 21
 lcd_d7        = 22
+button_1      = 20
+
+GPIO.setup(button_1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Define LCD column and row size for 16x2 LCD.
 lcd_columns = 16
@@ -268,6 +274,8 @@ fullnamelist = [
 			 'Thought-Leader-in-Residence']		
 
 
+def button_interupt(channel):
+    print "cats"
 
 def getNewJob():
     x = random.randint(1,3)
@@ -277,6 +285,7 @@ def getNewJob():
         return random.choice(firstnamelist)+' '+random.choice(lastnamelist)
 
 # Print a two line message
+GPIO.add_event_detect(button_1,GPIO.RISING,callback=button_interupt)
 message = 'Edward Pryor:  \n'
 message2 = getNewJob()
 #message2 = random.choice(fullnamelist)
