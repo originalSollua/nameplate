@@ -5,6 +5,7 @@ import time
 import random
 import Adafruit_CharLCD as LCD
 import RPi.GPIO as GPIO
+import os
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
@@ -275,7 +276,8 @@ fullnamelist = [
 
 
 def button_interupt(channel):
-    print "cats"
+    global shutdownflag
+    shutdownflag = True
 
 def getNewJob():
     x = random.randint(1,3)
@@ -293,7 +295,8 @@ message2 = getNewJob()
 i = 0
 oldtime = time.time()
 deleteflag = False
-while True:
+shutdownflag = False
+while not shutdownflag:
     time.sleep(0.5)
     if len(message2) <= 16:
         message2 = message2.ljust(16)
@@ -320,3 +323,6 @@ while True:
             deleteflag = True
             oldtime=time.time()
 
+lcd.message("Safe Shutdown Requested...")
+GPIO.cleanup()
+os.system("sudo shutdown -h now")
